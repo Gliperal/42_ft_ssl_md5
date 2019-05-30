@@ -3,6 +3,7 @@ CFLAGS=-Wall -Wextra -Werror
 RM=rm -f
 OBJS=ft_ssl.o \
 	 hash_md5.o \
+	 ft_ssl_hash.o \
 	 padder.o
 NAME=ft_ssl
 
@@ -28,10 +29,10 @@ fclean: clean
 re: fclean all
 
 hash_md5.o: hash_md5.h padder.h -lft
-	$(CC) $(CFLAGS) -c hash_md5.c
+
+ft_ssl_hash.o: padder.h ft_ssl_hash.h -lft
 
 padder.o: padder.h -lft
-	$(CC) $(CFLAGS) -c padder.c
 
 libft/libft.a:
 	make -C libft
