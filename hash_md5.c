@@ -6,14 +6,18 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 21:51:11 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/28 22:44:40 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/29 17:06:56 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 #include "hash_md5.h"
+#include "padder.h"
 
-static int	left_rotate(int n, int dist)
+// TODO REMOVE
+#include <stdio.h>
+
+static unsigned int	left_rotate(unsigned int n, int dist)
 {
 	return ((n << dist) | (n >> (32 - dist)));
 }
@@ -29,7 +33,7 @@ static void	hash_next(t_hash_values *h, unsigned char *next)
 	h->c = h->hash_c;
 	h->d = h->hash_d;
 	i = 0;
-	while (i < 63)
+	while (i < 64)
 	{
 		if (i < 16)
 			h->f = (h->b & h->c) | ((~h->b) & h->d);
@@ -40,11 +44,11 @@ static void	hash_next(t_hash_values *h, unsigned char *next)
 		else
 			h->f = h->c ^ (h->b | (~h->d));
 		h->g = (g_g_table[i / 16][0] * i + g_g_table[i / 16][1]) % 16;
-		h->f = h->f + h->a + g_k_table[i] + chunk[g];
+		h->f = h->f + h->a + g_k_table[i] + chunk[h->g];
 		h->a = h->d;
 		h->d = h->c;
 		h->c = h->b;
-		h->b = h->b + leftrotate(h->f, g_s_table[i]);
+		h->b = h->b + left_rotate(h->f, g_s_table[i]);
 		i++;
 	}
 	h->hash_a = h->hash_a + h->a;
@@ -53,24 +57,27 @@ static void	hash_next(t_hash_values *h, unsigned char *next)
 	h->hash_d = h->hash_d + h->d;
 }
 
-unsigned char	*hash_md5(unsigned char *message)
+unsigned char	*hash_md5(t_padder *message)
 {
-	t_hash_values *h;
-	unsigned char *digest;
+	t_hash_values	*h;
+	unsigned char	*next;
+	unsigned char	*digest;
 
-	h = (t_has_values *)malloc(sizeof(t_hash_values));
+	h = (t_hash_values *)malloc(sizeof(t_hash_values));
 	if (!h)
 		return (NULL);
-	digest = (char *)malloc(16 * sizeof(char));
+	digest = (unsigned char *)malloc(16 * sizeof(char));
+	if (!digest)
+		return (NULL);
 	h->hash_a = 0x67452301;
 	h->hash_b = 0xefcdab89;
 	h->hash_c = 0x98badcfe;
 	h->hash_d = 0x10325476;
-	while (reader.hasNext())
-		hash_next(h, reader.next(64 bytes));
-	ft_memcpy(digest, h->a, 4);
-	ft_memcpy(digest + 4, h->b, 4);
-	ft_memcpy(digest + 8, h->c, 4);
-	ft_memcpy(digest + 12, h->d, 4);
+	while ((next = padder_next(message)))
+		hash_next(h, next);
+	ft_memcpy(digest, &(h->hash_a), 4);
+	ft_memcpy(digest + 4, &(h->hash_b), 4);
+	ft_memcpy(digest + 8, &(h->hash_c), 4);
+	ft_memcpy(digest + 12, &(h->hash_d), 4);
 	return (digest);
 }
