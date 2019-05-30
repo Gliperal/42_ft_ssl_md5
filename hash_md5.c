@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 21:51:11 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/29 17:06:56 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/29 18:08:31 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,28 @@
 #include "hash_md5.h"
 #include "padder.h"
 
-// TODO REMOVE
-#include <stdio.h>
-
 static unsigned int	left_rotate(unsigned int n, int dist)
 {
 	return ((n << dist) | (n >> (32 - dist)));
 }
 
-static void	hash_next(t_hash_values *h, unsigned char *next)
+static void			zaphod_beeblebrox(t_hash_values *h, int i)
 {
-	int i;
-	unsigned int chunk[16];
+	if (i < 16)
+		h->f = (h->b & h->c) | ((~h->b) & h->d);
+	else if (i < 32)
+		h->f = (h->d & h->b) | ((~h->d) & h->c);
+	else if (i < 48)
+		h->f = h->b ^ h->c ^ h->d;
+	else
+		h->f = h->c ^ (h->b | (~h->d));
+	h->g = (g_g_table[i / 16][0] * i + g_g_table[i / 16][1]) % 16;
+}
+
+static void			hash_next(t_hash_values *h, unsigned char *next)
+{
+	int				i;
+	unsigned int	chunk[16];
 
 	ft_memcpy(chunk, next, 64);
 	h->a = h->hash_a;
@@ -35,15 +45,7 @@ static void	hash_next(t_hash_values *h, unsigned char *next)
 	i = 0;
 	while (i < 64)
 	{
-		if (i < 16)
-			h->f = (h->b & h->c) | ((~h->b) & h->d);
-		else if (i < 32)
-			h->f = (h->d & h->b) | ((~h->d) & h->c);
-		else if (i < 48)
-			h->f = h->b ^ h->c ^ h->d;
-		else
-			h->f = h->c ^ (h->b | (~h->d));
-		h->g = (g_g_table[i / 16][0] * i + g_g_table[i / 16][1]) % 16;
+		zaphod_beeblebrox(h, i);
 		h->f = h->f + h->a + g_k_table[i] + chunk[h->g];
 		h->a = h->d;
 		h->d = h->c;
@@ -57,7 +59,7 @@ static void	hash_next(t_hash_values *h, unsigned char *next)
 	h->hash_d = h->hash_d + h->d;
 }
 
-unsigned char	*hash_md5(t_padder *message)
+unsigned char		*hash_md5(t_padder *message)
 {
 	t_hash_values	*h;
 	unsigned char	*next;

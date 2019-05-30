@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 12:01:29 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/29 16:48:04 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/29 19:50:50 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_padder	*padder_new_file(int fd)
 	return (padder);
 }
 
-t_padder	*padder_new_string(char *message)
+t_padder	*padder_new_string(const char *message)
 {
 	t_padder *padder;
 
