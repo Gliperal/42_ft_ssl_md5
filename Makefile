@@ -30,6 +30,8 @@ re: fclean all
 
 hash_md5.o: hash_md5.h padder.h -lft
 
+ft_ssl.o: ft_ssl.h ft_ssl_hash.h -lft
+
 ft_ssl_hash.o: padder.h ft_ssl_hash.h -lft
 
 padder.o: padder.h -lft

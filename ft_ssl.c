@@ -6,47 +6,57 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/30 16:09:16 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 14:04:15 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_ssl.h"
 #include "ft_ssl_hash.h"
 #include "libft/libft.h"
 
-int	handle_flag_arg(int argc, const char **argv, int *arg, int *flags, const t_hash_algorithm algorithm)
+void	display_usage(void)
+{
+	ft_putstr("usage: ./ft_ssl algorithm [-pqr] [-s string] [files ...]\n");
+}
+
+int	handle_flag_arg(t_args *args, int *flags, const t_hash_algorithm algorithm)
 {
 	int i;
 
 	i = 1;
-	while (argv[*arg][i])
+	while (args->argv[args->arg_current][i])
 	{
-		if (argv[*arg][i] == 'p')
-			hash_stdin(algorithm);
-		else if (argv[*arg][i] == 'q')
-			*flags |= QUIET_MODE;
-		else if (argv[*arg][i] == 'r')
-			*flags |= REVERSE_MODE;
-		else if (argv[*arg][i] == 's')
+		if (args->argv[args->arg_current][i] == 'p')
 		{
-			if (argv[*arg][i + 1])
-				hash_string(argv[*arg] + i + 1, algorithm, *flags);
-			else if (*arg + 1 < argc)
+			*flags &= ~AWAITING_INPUT;
+			hash_stdin(algorithm);
+		}
+		else if (args->argv[args->arg_current][i] == 'q')
+			*flags |= QUIET_MODE | AWAITING_INPUT;
+		else if (args->argv[args->arg_current][i] == 'r')
+			*flags |= REVERSE_MODE | AWAITING_INPUT;
+		else if (args->argv[args->arg_current][i] == 's')
+		{
+			*flags &= ~AWAITING_INPUT;
+			if (args->argv[args->arg_current][i + 1])
+				hash_string(args->argv[args->arg_current] + i + 1, algorithm, *flags);
+			else if (args->arg_current + 1 < args->arg_count)
 			{
-				hash_string(argv[*arg + 1], algorithm, *flags);
-				(*arg)++;
+				hash_string(args->argv[args->arg_current + 1], algorithm, *flags);
+				args->arg_current += 1;
 			}
 			else
 			{
-				write(1, "ft_ssl: md5: option requires an argument -- s\nusage: md5 [-pqrtx] [-s string] [files ...]\n", 90);
+				ft_printf("ft_ssl: %s: option requires an argument -- s\n", algorithm.id);
+				display_usage();
 				return (1);
 			}
 			return (0);
 		}
 		else
 		{
-			write(1, "ft_ssl: md5: illegal option -- ", 31);
-			write(1, argv[*arg] + i, 1);
-			write(1, "\nusage: md5 [-pqrtx] [-s string] [files ...]\n", 45);
+			ft_printf("ft_ssl: %s: illegal option -- %c\n", algorithm.id, args->argv[args->arg_current][i]);
+			display_usage();
 			return (1);
 		}
 		i++;
@@ -56,24 +66,36 @@ int	handle_flag_arg(int argc, const char **argv, int *arg, int *flags, const t_h
 
 int	main(int argc, const char **argv)
 {
-	int arg;
 	int flags;
-	t_hash_algorithm md5 = hash_algorithms[0];
+	t_hash_algorithm algorithm;
+	t_args args;
 
-	flags = 0;
-	arg = 1;
-	while (arg < argc)
+	if (argc > 1 && ft_strequ(argv[1], "md5"))
+		algorithm = hash_algorithms[0];
+	else
 	{
-		if ((argv[arg][0] != '-') || (argv[arg][1] == 0))
+		display_usage();
+		return (1);
+	}
+	args.arg_count = argc;
+	args.arg_current = 2;
+	args.argv = argv;
+	flags = AWAITING_INPUT;
+	while (args.arg_current < argc)
+	{
+		if ((argv[args.arg_current][0] != '-') || (argv[args.arg_current][1] == 0))
 			break ;
-		if (handle_flag_arg(argc, argv, &arg, &flags, md5))
+		if (handle_flag_arg(&args, &flags, algorithm))
 			return (1);
-		arg++;
+		args.arg_current++;
 	}
-	// TODO If the last flag was q or r, hash stdin
-	while (arg < argc)
-	{
-		hash_file(argv[arg], md5, flags);
-		arg++;
-	}
+	if (args.arg_current == argc && flags & AWAITING_INPUT)
+		hash_stdin(algorithm);
+	else
+		while (args.arg_current < argc)
+		{
+			hash_file(argv[args.arg_current], algorithm, flags);
+			args.arg_current++;
+		}
+	return (0);
 }

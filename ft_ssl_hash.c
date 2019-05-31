@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/30 16:09:56 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 14:08:22 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ static void	hash_padder(t_padder *padder, t_hash_algorithm algorithm, const char
 	{
 		ft_putstr(algorithm.id);
 		write(1, " (", 2);
+		// TODO subject should be made all caps
 		ft_putstr(subject);
 		write(1, ") = ", 4);
 	}
@@ -68,6 +69,7 @@ static void	hash_padder(t_padder *padder, t_hash_algorithm algorithm, const char
 	if (!(flags & QUIET_MODE) && (flags & REVERSE_MODE))
 	{
 		write(1, " ", 1);
+		// TODO subject should be made all caps
 		ft_putstr(subject);
 	}
 	write(1, "\n", 1);
