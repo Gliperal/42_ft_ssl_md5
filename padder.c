@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 12:01:29 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 16:24:38 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 16:55:23 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "libft/libft.h"
 #include "padder.h"
 
-t_padder	*padder_new_file(int fd)
+t_padder		*padder_new_file(int fd)
 {
 	t_padder *padder;
 
@@ -32,7 +32,7 @@ t_padder	*padder_new_file(int fd)
 	return (padder);
 }
 
-t_padder	*padder_new_string(const char *message)
+t_padder		*padder_new_string(const char *message)
 {
 	t_padder *padder;
 
@@ -48,7 +48,7 @@ t_padder	*padder_new_string(const char *message)
 	return (padder);
 }
 
-static int				read_into_buffer(t_padder *padder, unsigned char *buff)
+static int		read_file_into_buffer(t_padder *padder, unsigned char *buff)
 {
 	int	bytes_read;
 	int total_bytes_read;
@@ -58,18 +58,37 @@ static int				read_into_buffer(t_padder *padder, unsigned char *buff)
 		total_bytes_read += bytes_read;
 	if (bytes_read == -1)
 		return (-1);
-	padder->size_so_far += total_bytes_read * 8;
+	padder->size_so_far += total_bytes_read;
 	return (total_bytes_read);
 }
 
-static unsigned char	*next_fd(t_padder *padder)
+static int		read_str_into_buffer(t_padder *padder, unsigned char *buff)
+{
+	int bytes_remaining;
+
+	bytes_remaining = ft_strlen(padder->str) - padder->size_so_far;
+	if (bytes_remaining >= 64)
+	{
+		ft_memcpy(buff, padder->str + padder->size_so_far, 64);
+		padder->size_so_far += 64;
+		return (64);
+	}
+	padder->size_so_far += bytes_remaining;
+	ft_memcpy(buff, padder->str, bytes_remaining);
+	return (bytes_remaining);
+}
+
+unsigned char	*padder_next(t_padder *padder)
 {
 	unsigned char	buffer[64];
 	int				bytes_read;
 
 	if (padder->last == 2)
 		return (NULL);
-	bytes_read = read_into_buffer(padder, buffer);
+	if (padder->fd == -1)
+		bytes_read = read_str_into_buffer(padder, buffer);
+	else
+		bytes_read = read_file_into_buffer(padder, buffer);
 	if (bytes_read == -1)
 		return (NULL);
 	if (bytes_read == 64)
@@ -79,35 +98,6 @@ static unsigned char	*next_fd(t_padder *padder)
 		buffer[bytes_read] = 0x80;
 	if (bytes_read < 56)
 	{
-		ft_memcpy(buffer + 56, &(padder->size_so_far), 8);
-		padder->last = 2;
-	}
-	else
-		padder->last = 1;
-	return (ft_memdup(buffer, 64));
-}
-
-static unsigned char	*next_str(t_padder *padder)
-{
-	unsigned char	buffer[64];
-	int				bytes_remaining;
-
-	if (padder->last == 2)
-		return (NULL);
-	bytes_remaining = ft_strlen(padder->str) - padder->size_so_far;
-	if (bytes_remaining >= 64)
-	{
-		ft_memcpy(buffer, padder->str + padder->size_so_far, 64);
-		padder->size_so_far += 64;
-		return (ft_memdup(buffer, 64));
-	}
-	padder->size_so_far += bytes_remaining;
-	ft_bzero(buffer, 64);
-	ft_memcpy(buffer, padder->str, bytes_remaining);
-	if (!padder->last)
-		buffer[bytes_remaining] = 0x80;
-	if (bytes_remaining < 56)
-	{
 		padder->size_so_far *= 8;
 		ft_memcpy(buffer + 56, &(padder->size_so_far), 8);
 		padder->last = 2;
@@ -115,12 +105,4 @@ static unsigned char	*next_str(t_padder *padder)
 	else
 		padder->last = 1;
 	return (ft_memdup(buffer, 64));
-}
-
-unsigned char	*padder_next(t_padder *padder)
-{
-	if (padder->fd == -1)
-		return (next_str(padder));
-	else
-		return (next_fd(padder));
 }
