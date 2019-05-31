@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 14:04:15 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 14:12:40 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	main(int argc, const char **argv)
 	t_args args;
 
 	if (argc > 1 && ft_strequ(argv[1], "md5"))
-		algorithm = hash_algorithms[0];
+		algorithm = g_hash_algorithms[0];
 	else
 	{
 		display_usage();

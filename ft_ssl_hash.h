@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 18:09:03 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 14:06:07 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 14:12:10 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct		s_hash_algorithm
 
 unsigned char		*hash_md5(t_padder *message);
 
-static const t_hash_algorithm	hash_algorithms[] =
+static const t_hash_algorithm	g_hash_algorithms[] =
 {
 	(t_hash_algorithm) {"md5", &hash_md5},
 	(t_hash_algorithm) {NULL, NULL}

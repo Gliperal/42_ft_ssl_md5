@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 12:01:29 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/29 19:50:50 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 14:47:25 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,31 @@ static unsigned char	*next_fd(t_padder *padder)
 
 static unsigned char	*next_str(t_padder *padder)
 {
-	if (padder)
+	unsigned char	buffer[64];
+	int				bytes_remaining;
+
+	if (padder->last == 2)
 		return (NULL);
-	return (NULL);
+	bytes_remaining = ft_strlen(padder->str) - padder->size_so_far;
+	if (bytes_remaining >= 64)
+	{
+		ft_memcpy(buffer, padder->str + padder->size_so_far, 64);
+		return (ft_memdup(buffer, 64));
+	}
+	padder->size_so_far += bytes_remaining;
+	ft_bzero(buffer, 64);
+	ft_memcpy(buffer, padder->str, bytes_remaining);
+	if (!padder->last)
+		buffer[bytes_remaining] = 0x80;
+	if (bytes_remaining < 56)
+	{
+		padder->size_so_far *= 8;
+		ft_memcpy(buffer + 56, &(padder->size_so_far), 8);
+		padder->last = 2;
+	}
+	else
+		padder->last = 1;
+	return (ft_memdup(buffer, 64));
 }
 
 unsigned char	*padder_next(t_padder *padder)
