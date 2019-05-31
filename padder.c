@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 12:01:29 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 14:47:25 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 16:24:38 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ static unsigned char	*next_str(t_padder *padder)
 	if (bytes_remaining >= 64)
 	{
 		ft_memcpy(buffer, padder->str + padder->size_so_far, 64);
+		padder->size_so_far += 64;
 		return (ft_memdup(buffer, 64));
 	}
 	padder->size_so_far += bytes_remaining;
