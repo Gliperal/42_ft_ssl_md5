@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 20:16:43 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 13:39:00 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,14 @@ static void	hash_padder(t_padder *padder, t_hash_algorithm *algorithm, const cha
 	write(1, "\n", 1);
 }
 
-const char *errstr()
+const char	*errstr()
 {
 	if (errno == ENOENT)
-		return "No such file or directory";
+		return ("No such file or directory");
 	else if (errno == EACCES)
-		return "Permission denied";
+		return ("Permission denied");
 	else
-		return "Unknown error.";
+		return ("Unknown error.");
 }
 
 void		hash_file(const char *filename, t_hash_algorithm *algorithm, int flags)
@@ -123,7 +123,6 @@ void		hash_stdin(t_hash_algorithm *algorithm, int print_while_hashing)
 {
 	t_padder *padder;
 
-	// TODO stdin should print while hashing
 	padder = padder_new_file(0, print_while_hashing);
 	hash_padder(padder, algorithm, "stdin", QUIET_MODE);
 	free(padder);

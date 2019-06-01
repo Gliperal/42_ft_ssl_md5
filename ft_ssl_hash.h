@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 18:09:03 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 20:17:01 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 13:22:35 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,6 @@ static const t_hash_algorithm	g_hash_algorithms[] =
 void	hash_file(const char *filename, t_hash_algorithm *algorithm, int flags);
 void	hash_string(const char *str, t_hash_algorithm *algorithm, int flags);
 void	hash_stdin(t_hash_algorithm *algorithm, int print_while_hashing);
+int		main_hash(int argc, const char **argv, t_hash_algorithm *algorithm);
 
 #endif
