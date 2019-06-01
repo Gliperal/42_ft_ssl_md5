@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 18:09:03 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/06/01 14:42:18 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 14:55:05 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define FT_SSL_HASH_H
 
 # include "padder.h"
+
+# define SSL_ILEG_OPT "ft_ssl: %s: illegal option -- %c\n"
 
 void	hash_file(const char *filename, t_hash_algorithm *algorithm, int flags);
 void	hash_string(const char *str, t_hash_algorithm *algorithm, int flags);

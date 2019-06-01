@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/06/01 14:43:42 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 15:11:09 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	put_hex_string(unsigned char *str, int len)
 
 static void	hash_padder(t_padder *padder, t_hash_algorithm *algorithm, const char *subject, int flags)
 {
-	unsigned char *digest;
+	unsigned char	*digest;
 
 	if (!padder)
 	{
@@ -60,15 +60,17 @@ static void	hash_padder(t_padder *padder, t_hash_algorithm *algorithm, const cha
 	}
 	if (!(flags & QUIET_MODE) && !(flags & REVERSE_MODE))
 	{
-		// TODO subject should be made all caps
-		ft_printf("%s (%s) = ", algorithm->id, subject);
+		ft_putstr_upper(algorithm->id);
+		write(1, " (", 2);
+		ft_putstr(subject);
+		write(1, ") = ", 4);
 	}
 	put_hex_string(digest, algorithm->digest_length / 8);
 	free(digest);
 	if (!(flags & QUIET_MODE) && (flags & REVERSE_MODE))
 	{
-		// TODO subject should be made all caps
-		ft_printf(" %s", subject);
+		write(1, " ", 1);
+		ft_putstr(subject);
 	}
 	write(1, "\n", 1);
 }

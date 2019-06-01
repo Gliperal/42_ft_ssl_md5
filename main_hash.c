@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/06/01 14:46:20 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 14:58:08 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	display_usage_hash(void)
 	ft_putstr("usage: ./ft_ssl algorithm [-pqr] [-s string] [files ...]\n");
 }
 
-static int	handle_string_arg(t_args *args, int *flags, t_hash_algorithm *alg, int i)
+static int	handle_str(t_args *args, int *flags, t_hash_algorithm *alg, int i)
 {
 	*flags |= OVERRIDE_AWAITING_INPUT;
 	if (args->argv[args->arg_current][i + 1])
@@ -53,10 +53,10 @@ static int	handle_flag_arg(t_args *args, int *flags, t_hash_algorithm *alg)
 		else if (args->argv[args->arg_current][i] == 'r')
 			*flags |= REVERSE_MODE | AWAITING_INPUT;
 		else if (args->argv[args->arg_current][i] == 's')
-			return (handle_string_arg(args, flags, alg, i));
+			return (handle_str(args, flags, alg, i));
 		else
 		{
-			ft_printf("ft_ssl: %s: illegal option -- %c\n", alg->id, args->argv[args->arg_current][i]);
+			ft_printf(SSL_ILEG_OPT, alg->id, args->argv[args->arg_current][i]);
 			display_usage_hash();
 			return (1);
 		}
@@ -65,24 +65,24 @@ static int	handle_flag_arg(t_args *args, int *flags, t_hash_algorithm *alg)
 	return (0);
 }
 
-void	handle_file_args(t_args *args, int flags, t_hash_algorithm *algorithm)
+static void	handle_file_args(t_args *args, int flags, t_hash_algorithm *alg)
 {
 	if (args->arg_current == args->arg_count)
 	{
 		if (flags & AWAITING_INPUT && !(flags & OVERRIDE_AWAITING_INPUT))
-			hash_stdin(algorithm, 0);
+			hash_stdin(alg, 0);
 	}
 	else
 	{
 		while (args->arg_current < args->arg_count)
 		{
-			hash_file(args->argv[args->arg_current], algorithm, flags);
+			hash_file(args->argv[args->arg_current], alg, flags);
 			args->arg_current++;
 		}
 	}
 }
 
-int	main_hash(int argc, const char **argv, t_hash_algorithm *algorithm)
+int			main_hash(int argc, const char **argv, t_hash_algorithm *algorithm)
 {
 	int		flags;
 	t_args	args;

@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/06/01 14:45:46 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 14:49:18 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@ static const t_hash_algorithm	*get_hash_algorithm(const char *name)
 	return (NULL);
 }
 
-static void	display_commands(void)
+static void						display_commands(void)
 {
 	int i;
 
-	ft_putstr("Standard commands:\n");
+	ft_putstr("\nStandard commands:\n");
 	ft_putstr("\nMessage Digest commands:\n");
 	i = 0;
 	while (g_hash_algorithms[i].id)
@@ -44,7 +44,7 @@ static void	display_commands(void)
 	ft_putstr("\nCipher commands:\n");
 }
 
-int	main(int argc, const char **argv)
+int								main(int argc, const char **argv)
 {
 	t_hash_algorithm *algorithm;
 
@@ -60,7 +60,7 @@ int	main(int argc, const char **argv)
 			return (main_hash(argc - 2, argv + 2, algorithm));
 		else
 		{
-			ft_printf("ft_ssl: Error: '%s' is an invalid command.\n\n", argv[1]);
+			ft_printf("ft_ssl: Error: '%s' is an invalid command.\n", argv[1]);
 			display_commands();
 			return (1);
 		}
