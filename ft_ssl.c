@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 18:04:55 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 18:32:49 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,14 @@ int	handle_flag_arg(t_args *args, int *flags, const t_hash_algorithm algorithm)
 	while (args->argv[args->arg_current][i])
 	{
 		if (args->argv[args->arg_current][i] == 'p')
-		{
-			*flags &= ~AWAITING_INPUT;
 			hash_stdin(algorithm, 1);
-		}
 		else if (args->argv[args->arg_current][i] == 'q')
-			*flags |= QUIET_MODE;
+			*flags |= QUIET_MODE | AWAITING_INPUT;
 		else if (args->argv[args->arg_current][i] == 'r')
-			*flags |= REVERSE_MODE;
+			*flags |= REVERSE_MODE | AWAITING_INPUT;
 		else if (args->argv[args->arg_current][i] == 's')
 		{
-			*flags &= ~AWAITING_INPUT;
+			*flags |= OVERRIDE_AWAITING_INPUT;
 			if (args->argv[args->arg_current][i + 1])
 				hash_string(args->argv[args->arg_current] + i + 1, algorithm, *flags);
 			else if (args->arg_current + 1 < args->arg_count)
@@ -80,7 +77,7 @@ int	main(int argc, const char **argv)
 	args.arg_count = argc;
 	args.arg_current = 2;
 	args.argv = argv;
-	flags = AWAITING_INPUT;
+	flags = 0;
 	while (args.arg_current < argc)
 	{
 		if ((argv[args.arg_current][0] != '-') || (argv[args.arg_current][1] == 0))
@@ -89,7 +86,7 @@ int	main(int argc, const char **argv)
 			return (1);
 		args.arg_current++;
 	}
-	if (args.arg_current == argc && flags & AWAITING_INPUT)
+	if (args.arg_current == argc && flags & AWAITING_INPUT && !(flags & OVERRIDE_AWAITING_INPUT))
 		hash_stdin(algorithm, 0);
 	else
 		while (args.arg_current < argc)

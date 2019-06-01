@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 18:09:03 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 18:02:03 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 18:32:01 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # define QUIET_MODE 1
 # define REVERSE_MODE 2
 # define AWAITING_INPUT 4
+# define OVERRIDE_AWAITING_INPUT 8
 
 typedef struct					s_hash_algorithm
 {
