@@ -6,11 +6,12 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/06/01 13:37:25 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 14:46:20 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "args.h"
+#include "hash_algorithms.h"
 #include "ft_ssl_hash.h"
 #include "libft/libft.h"
 

@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/06/01 13:39:00 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 14:43:42 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 // TODO Is this allowed?
 #include <errno.h>
 
-#include "ft_ssl_hash.h"
+#include "hash_algorithms.h"
 #include "libft/libft.h"
 
 static void	put_hex_string(unsigned char *str, int len)
