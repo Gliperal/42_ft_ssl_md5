@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/31 19:53:52 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 19:57:09 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 14:03:22 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct		s_hash_values
 	unsigned int	maj;
 	unsigned int	temp1;
 	unsigned int	temp2;
+	unsigned int	w[64];
 }					t_hash_values;
 
 static const int	g_k_table[64] =

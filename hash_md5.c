@@ -6,18 +6,13 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 21:51:11 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/06/01 11:55:21 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 14:25:23 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 #include "hash_md5.h"
 #include "padder.h"
-
-static unsigned int	left_rotate(unsigned int n, int dist)
-{
-	return ((n << dist) | (n >> (32 - dist)));
-}
 
 static void			zaphod_beeblebrox(t_hash_values *h, int i)
 {
@@ -50,7 +45,7 @@ static void			hash_next(t_hash_values *h, unsigned char *next)
 		h->a = h->d;
 		h->d = h->c;
 		h->c = h->b;
-		h->b = h->b + left_rotate(h->f, g_s_table[i]);
+		h->b = h->b + ft_left_rotate(h->f, g_s_table[i]);
 		i++;
 	}
 	h->hash_a = h->hash_a + h->a;
