@@ -2,8 +2,9 @@ CC=gcc
 CFLAGS=-Wall -Wextra -Werror
 RM=rm -f
 OBJS=ft_ssl.o \
-	 hash_md5.o \
 	 ft_ssl_hash.o \
+	 hash_md5.o \
+	 hash_sha256.o \
 	 padder.o
 NAME=ft_ssl
 
@@ -28,11 +29,13 @@ fclean: clean
 .PHONY: re
 re: fclean all
 
-hash_md5.o: hash_md5.h padder.h -lft
-
 ft_ssl.o: ft_ssl.h ft_ssl_hash.h -lft
 
 ft_ssl_hash.o: padder.h ft_ssl_hash.h -lft
+
+hash_md5.o: hash_md5.h padder.h -lft
+
+hash_sha256.o: hash_sha256.h padder.h -lft
 
 padder.o: padder.h -lft
 

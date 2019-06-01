@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 19:01:55 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 20:16:43 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,27 +43,27 @@ static void	put_hex_string(unsigned char *str, int len)
 	}
 }
 
-static void	hash_padder(t_padder *padder, t_hash_algorithm algorithm, const char *subject, int flags)
+static void	hash_padder(t_padder *padder, t_hash_algorithm *algorithm, const char *subject, int flags)
 {
 	unsigned char *digest;
 
 	if (!padder)
 	{
-		ft_printf("ft_ssl: %s: %s: Malloc failure\n", algorithm.id, subject);
+		ft_printf("ft_ssl: %s: %s: Malloc failure\n", algorithm->id, subject);
 		return ;
 	}
-	digest = (*(algorithm.hasher))(padder);
+	digest = (*(algorithm->hasher))(padder);
 	if (!digest)
 	{
-		ft_printf("ft_ssl: %s: %s: Hash failure\n", algorithm.id, subject);
+		ft_printf("ft_ssl: %s: %s: Hash failure\n", algorithm->id, subject);
 		return ;
 	}
 	if (!(flags & QUIET_MODE) && !(flags & REVERSE_MODE))
 	{
 		// TODO subject should be made all caps
-		ft_printf("%s (%s) = ", algorithm.id, subject);
+		ft_printf("%s (%s) = ", algorithm->id, subject);
 	}
-	put_hex_string(digest, 16);
+	put_hex_string(digest, algorithm->digest_length / 8);
 	free(digest);
 	if (!(flags & QUIET_MODE) && (flags & REVERSE_MODE))
 	{
@@ -83,7 +83,7 @@ const char *errstr()
 		return "Unknown error.";
 }
 
-void		hash_file(const char *filename, t_hash_algorithm algorithm, int flags)
+void		hash_file(const char *filename, t_hash_algorithm *algorithm, int flags)
 {
 	t_padder	*padder;
 	int			fd;
@@ -91,7 +91,7 @@ void		hash_file(const char *filename, t_hash_algorithm algorithm, int flags)
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
-		ft_printf("ft_ssl: %s: %s: %s\n", algorithm.id, filename, errstr());
+		ft_printf("ft_ssl: %s: %s: %s\n", algorithm->id, filename, errstr());
 		return ;
 	}
 	padder = padder_new_file(fd, 0);
@@ -99,7 +99,7 @@ void		hash_file(const char *filename, t_hash_algorithm algorithm, int flags)
 	free(padder);
 }
 
-void		hash_string(const char *str, t_hash_algorithm algorithm, int flags)
+void		hash_string(const char *str, t_hash_algorithm *algorithm, int flags)
 {
 	t_padder	*padder;
 	char		*subject;
@@ -119,7 +119,7 @@ void		hash_string(const char *str, t_hash_algorithm algorithm, int flags)
 	free(subject);
 }
 
-void		hash_stdin(t_hash_algorithm algorithm, int print_while_hashing)
+void		hash_stdin(t_hash_algorithm *algorithm, int print_while_hashing)
 {
 	t_padder *padder;
 

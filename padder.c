@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 12:01:29 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 17:56:58 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 12:30:18 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static int		read_str_into_buffer(t_padder *padder, unsigned char *buff)
 	return (bytes_remaining);
 }
 
-unsigned char	*padder_next(t_padder *padder)
+unsigned char	*padder_next(t_padder *padder, int endian)
 {
 	unsigned char	buffer[64];
 	int				bytes_read;
@@ -102,7 +102,7 @@ unsigned char	*padder_next(t_padder *padder)
 	if (bytes_read < 56)
 	{
 		padder->size_so_far *= 8;
-		ft_memcpy(buffer + 56, &(padder->size_so_far), 8);
+		ft_number_cpy(buffer + 56, &(padder->size_so_far), 8, endian);
 		padder->last = 2;
 	}
 	else

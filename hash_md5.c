@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 21:51:11 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 19:21:11 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 11:55:21 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ unsigned char		*hash_md5(t_padder *message)
 	h->hash_b = 0xefcdab89;
 	h->hash_c = 0x98badcfe;
 	h->hash_d = 0x10325476;
-	while ((next = padder_next(message)))
+	while ((next = padder_next(message, LITTLE_ENDIAN)))
 	{
 		hash_next(h, next);
 		free(next);

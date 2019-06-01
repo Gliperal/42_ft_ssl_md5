@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 18:32:49 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 20:14:13 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void	display_usage(void)
 	ft_putstr("usage: ./ft_ssl algorithm [-pqr] [-s string] [files ...]\n");
 }
 
-int	handle_flag_arg(t_args *args, int *flags, const t_hash_algorithm algorithm)
+// TODO: Absolutely no args = read stdin
+int	handle_flag_arg(t_args *args, int *flags, t_hash_algorithm *algorithm)
 {
 	int i;
 
@@ -44,7 +45,7 @@ int	handle_flag_arg(t_args *args, int *flags, const t_hash_algorithm algorithm)
 			}
 			else
 			{
-				ft_printf("ft_ssl: %s: option requires an argument -- s\n", algorithm.id);
+				ft_printf("ft_ssl: %s: option requires an argument -- s\n", algorithm->id);
 				display_usage();
 				return (1);
 			}
@@ -52,7 +53,7 @@ int	handle_flag_arg(t_args *args, int *flags, const t_hash_algorithm algorithm)
 		}
 		else
 		{
-			ft_printf("ft_ssl: %s: illegal option -- %c\n", algorithm.id, args->argv[args->arg_current][i]);
+			ft_printf("ft_ssl: %s: illegal option -- %c\n", algorithm->id, args->argv[args->arg_current][i]);
 			display_usage();
 			return (1);
 		}
@@ -61,14 +62,35 @@ int	handle_flag_arg(t_args *args, int *flags, const t_hash_algorithm algorithm)
 	return (0);
 }
 
+const t_hash_algorithm	*get_hash_algorithm(const char *name)
+{
+	int i;
+
+	i = 0;
+	while (g_hash_algorithms[i].id)
+	{
+		if (ft_strequ(g_hash_algorithms[i].id, name))
+			return (g_hash_algorithms + i);
+		i++;
+	}
+	return (NULL);
+}
+
 int	main(int argc, const char **argv)
 {
 	int flags;
-	t_hash_algorithm algorithm;
+	t_hash_algorithm *algorithm;
 	t_args args;
 
-	if (argc > 1 && ft_strequ(argv[1], "md5"))
-		algorithm = g_hash_algorithms[0];
+	if (argc > 1)
+	{
+		algorithm = (t_hash_algorithm *)get_hash_algorithm(argv[1]);
+		if (!algorithm)
+		{
+			ft_printf("ft_ssl: Unknown hash algorithm \"%s\"\n", argv[1]);
+			return (1);
+		}
+	}
 	else
 	{
 		display_usage();
