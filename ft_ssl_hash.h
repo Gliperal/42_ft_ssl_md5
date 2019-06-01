@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 18:09:03 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 14:12:10 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 18:02:03 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@
 # define REVERSE_MODE 2
 # define AWAITING_INPUT 4
 
-typedef struct		s_hash_algorithm
+typedef struct					s_hash_algorithm
 {
-	const char		*id;
-	unsigned char	*(*hasher)(t_padder *);
-}					t_hash_algorithm;
+	const char					*id;
+	unsigned char				*(*hasher)(t_padder *);
+}								t_hash_algorithm;
 
-unsigned char		*hash_md5(t_padder *message);
+unsigned char					*hash_md5(t_padder *message);
 
 static const t_hash_algorithm	g_hash_algorithms[] =
 {
@@ -37,6 +37,6 @@ static const t_hash_algorithm	g_hash_algorithms[] =
 
 void	hash_file(const char *filename, t_hash_algorithm algorithm, int flags);
 void	hash_string(const char *str, t_hash_algorithm algorithm, int flags);
-void	hash_stdin(t_hash_algorithm algorithm);
+void	hash_stdin(t_hash_algorithm algorithm, int print_while_hashing);
 
 #endif

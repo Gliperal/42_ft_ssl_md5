@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 12:01:29 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 16:55:23 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 17:56:58 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "libft/libft.h"
 #include "padder.h"
 
-t_padder		*padder_new_file(int fd)
+t_padder		*padder_new_file(int fd, int print_while_padding)
 {
 	t_padder *padder;
 
@@ -29,6 +29,7 @@ t_padder		*padder_new_file(int fd)
 	padder->str = NULL;
 	padder->size_so_far = 0;
 	padder->last = 0;
+	padder->print_while_padding = print_while_padding;
 	return (padder);
 }
 
@@ -59,6 +60,8 @@ static int		read_file_into_buffer(t_padder *padder, unsigned char *buff)
 	if (bytes_read == -1)
 		return (-1);
 	padder->size_so_far += total_bytes_read;
+	if (padder->print_while_padding)
+		write(1, buff, total_bytes_read);
 	return (total_bytes_read);
 }
 

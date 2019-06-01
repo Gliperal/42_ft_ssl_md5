@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 14:12:40 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 18:04:55 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,12 @@ int	handle_flag_arg(t_args *args, int *flags, const t_hash_algorithm algorithm)
 		if (args->argv[args->arg_current][i] == 'p')
 		{
 			*flags &= ~AWAITING_INPUT;
-			hash_stdin(algorithm);
+			hash_stdin(algorithm, 1);
 		}
 		else if (args->argv[args->arg_current][i] == 'q')
-			*flags |= QUIET_MODE | AWAITING_INPUT;
+			*flags |= QUIET_MODE;
 		else if (args->argv[args->arg_current][i] == 'r')
-			*flags |= REVERSE_MODE | AWAITING_INPUT;
+			*flags |= REVERSE_MODE;
 		else if (args->argv[args->arg_current][i] == 's')
 		{
 			*flags &= ~AWAITING_INPUT;
@@ -90,7 +90,7 @@ int	main(int argc, const char **argv)
 		args.arg_current++;
 	}
 	if (args.arg_current == argc && flags & AWAITING_INPUT)
-		hash_stdin(algorithm);
+		hash_stdin(algorithm, 0);
 	else
 		while (args.arg_current < argc)
 		{

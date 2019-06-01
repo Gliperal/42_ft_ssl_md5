@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 14:08:22 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 18:01:40 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,10 @@ void		hash_file(const char *filename, t_hash_algorithm algorithm, int flags)
 	if (fd < 0)
 	{
 		write(1, "Open failure\n", 13);
+		// TODO Fetch errno and display message
 		return ;
 	}
-	padder = padder_new_file(fd);
+	padder = padder_new_file(fd, 0);
 	hash_padder(padder, algorithm, filename, flags);
 	free(padder);
 }
@@ -111,12 +112,12 @@ void		hash_string(const char *str, t_hash_algorithm algorithm, int flags)
 	free(subject);
 }
 
-void		hash_stdin(t_hash_algorithm algorithm)
+void		hash_stdin(t_hash_algorithm algorithm, int print_while_hashing)
 {
 	t_padder *padder;
 
 	// TODO stdin should print while hashing
-	padder = padder_new_file(0);
+	padder = padder_new_file(0, print_while_hashing);
 	hash_padder(padder, algorithm, "stdin", QUIET_MODE);
 	free(padder);
 }
