@@ -6,14 +6,13 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/06/01 15:11:09 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 15:23:33 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
-#include <stdio.h>
 #include <stdlib.h>
-// TODO Is this allowed?
+#include <string.h>
 #include <errno.h>
 
 #include "hash_algorithms.h"
@@ -68,36 +67,23 @@ static void	hash_padder(t_padder *padder, t_hash_algorithm *algorithm, const cha
 	put_hex_string(digest, algorithm->digest_length / 8);
 	free(digest);
 	if (!(flags & QUIET_MODE) && (flags & REVERSE_MODE))
-	{
-		write(1, " ", 1);
-		ft_putstr(subject);
-	}
+		ft_printf(" %s", subject);
 	write(1, "\n", 1);
 }
 
-const char	*errstr()
-{
-	if (errno == ENOENT)
-		return ("No such file or directory");
-	else if (errno == EACCES)
-		return ("Permission denied");
-	else
-		return ("Unknown error.");
-}
-
-void		hash_file(const char *filename, t_hash_algorithm *algorithm, int flags)
+void		hash_file(const char *file, t_hash_algorithm *algorithm, int flags)
 {
 	t_padder	*padder;
 	int			fd;
 
-	fd = open(filename, O_RDONLY);
+	fd = open(file, O_RDONLY);
 	if (fd < 0)
 	{
-		ft_printf("ft_ssl: %s: %s: %s\n", algorithm->id, filename, errstr());
+		ft_printf("ft_ssl: %s: %s: %s\n", algorithm->id, file, strerror(errno));
 		return ;
 	}
 	padder = padder_new_file(fd, 0);
-	hash_padder(padder, algorithm, filename, flags);
+	hash_padder(padder, algorithm, file, flags);
 	free(padder);
 }
 
