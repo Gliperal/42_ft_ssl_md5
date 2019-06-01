@@ -6,13 +6,15 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/05/31 18:01:40 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/05/31 19:01:55 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+// TODO Is this allowed?
+#include <errno.h>
 
 #include "ft_ssl_hash.h"
 #include "libft/libft.h"
@@ -47,32 +49,38 @@ static void	hash_padder(t_padder *padder, t_hash_algorithm algorithm, const char
 
 	if (!padder)
 	{
-		write(1, "Malloc failure\n", 15);
+		ft_printf("ft_ssl: %s: %s: Malloc failure\n", algorithm.id, subject);
 		return ;
 	}
 	digest = (*(algorithm.hasher))(padder);
 	if (!digest)
 	{
-		write(1, "Hash failure\n", 13);
+		ft_printf("ft_ssl: %s: %s: Hash failure\n", algorithm.id, subject);
 		return ;
 	}
 	if (!(flags & QUIET_MODE) && !(flags & REVERSE_MODE))
 	{
-		ft_putstr(algorithm.id);
-		write(1, " (", 2);
 		// TODO subject should be made all caps
-		ft_putstr(subject);
-		write(1, ") = ", 4);
+		ft_printf("%s (%s) = ", algorithm.id, subject);
 	}
 	put_hex_string(digest, 16);
 	free(digest);
 	if (!(flags & QUIET_MODE) && (flags & REVERSE_MODE))
 	{
-		write(1, " ", 1);
 		// TODO subject should be made all caps
-		ft_putstr(subject);
+		ft_printf(" %s", subject);
 	}
 	write(1, "\n", 1);
+}
+
+const char *errstr()
+{
+	if (errno == ENOENT)
+		return "No such file or directory";
+	else if (errno == EACCES)
+		return "Permission denied";
+	else
+		return "Unknown error.";
 }
 
 void		hash_file(const char *filename, t_hash_algorithm algorithm, int flags)
@@ -83,8 +91,7 @@ void		hash_file(const char *filename, t_hash_algorithm algorithm, int flags)
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
-		write(1, "Open failure\n", 13);
-		// TODO Fetch errno and display message
+		ft_printf("ft_ssl: %s: %s: %s\n", algorithm.id, filename, errstr());
 		return ;
 	}
 	padder = padder_new_file(fd, 0);
