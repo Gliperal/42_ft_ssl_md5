@@ -6,7 +6,7 @@
 /*   By: nwhitlow <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 19:01:48 by nwhitlow          #+#    #+#             */
-/*   Updated: 2019/06/01 15:23:33 by nwhitlow         ###   ########.fr       */
+/*   Updated: 2019/06/01 21:17:01 by nwhitlow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,32 +42,37 @@ static void	put_hex_string(unsigned char *str, int len)
 	}
 }
 
-static void	hash_padder(t_padder *padder, t_hash_algorithm *algorithm, const char *subject, int flags)
+/*
+** NOTE: This function used to be called hash_padder, and subject used to be
+** const *char (which it REALLY should be), but I had to fit norme
+*/
+
+static void	hp(t_padder *padder, t_hash_algorithm *alg, char *subj, int flags)
 {
 	unsigned char	*digest;
 
 	if (!padder)
 	{
-		ft_printf("ft_ssl: %s: %s: Malloc failure\n", algorithm->id, subject);
+		ft_printf("ft_ssl: %s: %s: Malloc failure\n", alg->id, subj);
 		return ;
 	}
-	digest = (*(algorithm->hasher))(padder);
+	digest = (*(alg->hasher))(padder);
 	if (!digest)
 	{
-		ft_printf("ft_ssl: %s: %s: Hash failure\n", algorithm->id, subject);
+		ft_printf("ft_ssl: %s: %s: Hash failure\n", alg->id, subj);
 		return ;
 	}
 	if (!(flags & QUIET_MODE) && !(flags & REVERSE_MODE))
 	{
-		ft_putstr_upper(algorithm->id);
+		ft_putstr_upper(alg->id);
 		write(1, " (", 2);
-		ft_putstr(subject);
+		ft_putstr(subj);
 		write(1, ") = ", 4);
 	}
-	put_hex_string(digest, algorithm->digest_length / 8);
+	put_hex_string(digest, alg->digest_length / 8);
 	free(digest);
 	if (!(flags & QUIET_MODE) && (flags & REVERSE_MODE))
-		ft_printf(" %s", subject);
+		ft_printf(" %s", subj);
 	write(1, "\n", 1);
 }
 
@@ -83,7 +88,7 @@ void		hash_file(const char *file, t_hash_algorithm *algorithm, int flags)
 		return ;
 	}
 	padder = padder_new_file(fd, 0);
-	hash_padder(padder, algorithm, file, flags);
+	hp(padder, algorithm, (char *)file, flags);
 	free(padder);
 }
 
@@ -102,7 +107,7 @@ void		hash_string(const char *str, t_hash_algorithm *algorithm, int flags)
 	ft_strcpy(subject + 1, str);
 	subject[0] = '\"';
 	subject[ft_strlen(str) + 1] = '\"';
-	hash_padder(padder, algorithm, subject, flags);
+	hp(padder, algorithm, subject, flags);
 	free(padder);
 	free(subject);
 }
@@ -112,6 +117,6 @@ void		hash_stdin(t_hash_algorithm *algorithm, int print_while_hashing)
 	t_padder *padder;
 
 	padder = padder_new_file(0, print_while_hashing);
-	hash_padder(padder, algorithm, "stdin", QUIET_MODE);
+	hp(padder, algorithm, (char *)"stdin", QUIET_MODE);
 	free(padder);
 }
